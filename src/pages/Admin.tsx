@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import MainLayout from "@/layouts/MainLayout";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Table,
@@ -52,6 +53,7 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+  const [exportLoading, setExportLoading] = useState<"csv" | "excel" | "pdf" | null>(null);
 
   const fetchOrders = async () => {
     try {
@@ -90,6 +92,33 @@ const Admin = () => {
     }
   };
 
+  const downloadExport = async (
+    type: "csv" | "excel" | "pdf",
+    endpoint: string,
+    filename: string
+  ) => {
+    try {
+      setExportLoading(type);
+      setError("");
+
+      const response = await axios.get(endpoint, { responseType: "blob" });
+      const fileUrl = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+
+      link.href = fileUrl;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(fileUrl);
+    } catch (requestError) {
+      console.error(requestError);
+      setError("Failed to export orders. Please try again.");
+    } finally {
+      setExportLoading(null);
+    }
+  };
+
   return (
     <MainLayout>
       <section className="py-10">
@@ -114,6 +143,33 @@ const Admin = () => {
           </div>
 
           {error && <p className="mb-4 text-sm text-destructive">{error}</p>}
+
+          <div className="mb-4 flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              onClick={() => downloadExport("csv", "/api/export/csv", "orders.csv")}
+              disabled={exportLoading !== null}
+              className="font-heading uppercase tracking-wider"
+            >
+              {exportLoading === "csv" ? "Exporting CSV..." : "Export CSV"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => downloadExport("excel", "/api/export/excel", "orders.xlsx")}
+              disabled={exportLoading !== null}
+              className="font-heading uppercase tracking-wider"
+            >
+              {exportLoading === "excel" ? "Exporting Excel..." : "Export Excel"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => downloadExport("pdf", "/api/export/pdf", "orders.pdf")}
+              disabled={exportLoading !== null}
+              className="font-heading uppercase tracking-wider"
+            >
+              {exportLoading === "pdf" ? "Exporting PDF..." : "Export PDF"}
+            </Button>
+          </div>
 
           <div className="rounded-lg border border-border bg-card">
             <Table>
