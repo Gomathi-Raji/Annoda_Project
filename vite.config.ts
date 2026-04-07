@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => ({
     },
     proxy: {
       "/api": {
-        target: "http://localhost:5000",
+        target: "https://annoda-project.onrender.com/",
         changeOrigin: true,
       },
     },
