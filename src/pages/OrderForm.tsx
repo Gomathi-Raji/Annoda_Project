@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { CheckCircle } from "lucide-react";
-import axios from "axios";
 import MainLayout from "@/layouts/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import api from "@/lib/api";
 
 interface OrderLocationState {
   size?: "S" | "M" | "L" | "XL";
@@ -55,7 +55,7 @@ const OrderForm = () => {
     setSubmitError("");
 
     try {
-      await axios.post("/api/orders", {
+      await api.post("/api/orders", {
         customerName: form.name.trim(),
         phone: form.phone.trim(),
         address: form.address.trim(),

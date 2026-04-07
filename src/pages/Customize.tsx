@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Upload, Type, RotateCw } from "lucide-react";
 import MainLayout from "@/layouts/MainLayout";
@@ -11,6 +11,7 @@ import { Slider } from "@/components/ui/slider";
 
 const Customize = () => {
   const navigate = useNavigate();
+  const objectUrlRef = useRef<string | null>(null);
   const [selectedSize, setSelectedSize] = useState("M");
   const [selectedColor, setSelectedColor] = useState(tshirtColors[0]);
   const [view, setView] = useState<"front" | "back">("front");
@@ -23,18 +24,80 @@ const Customize = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [objectCount, setObjectCount] = useState(0);
 
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+    };
+  }, []);
+
+  const optimizeImage = async (file: File) => {
+    const bitmap = await createImageBitmap(file);
+    const maxDimension = 1024;
+    const longestSide = Math.max(bitmap.width, bitmap.height);
+    const scale = longestSide > maxDimension ? maxDimension / longestSide : 1;
+
+    const targetWidth = Math.max(1, Math.round(bitmap.width * scale));
+    const targetHeight = Math.max(1, Math.round(bitmap.height * scale));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+
+    const context = canvas.getContext("2d");
+    if (!context) {
+      throw new Error("Unable to optimize image");
+    }
+
+    context.drawImage(bitmap, 0, 0, targetWidth, targetHeight);
+
+    const optimizedBlob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error("Image conversion failed"));
+            return;
+          }
+
+          resolve(blob);
+        },
+        "image/webp",
+        0.82
+      );
+    });
+
+    bitmap.close();
+    return URL.createObjectURL(optimizedBlob);
+  };
+
   const addText = () => {
     if (!textInput.trim()) return;
     setAddTextTrigger((prev) => prev + 1);
     setTextInput("");
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const fileUrl = URL.createObjectURL(file);
-    setUploadedImage(fileUrl);
-    setAddImageTrigger((prev) => prev + 1);
+
+    if (!file.type.startsWith("image/")) return;
+
+    try {
+      const optimizedImageUrl = await optimizeImage(file);
+
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+
+      objectUrlRef.current = optimizedImageUrl;
+      setUploadedImage(optimizedImageUrl);
+      setAddImageTrigger((prev) => prev + 1);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      e.target.value = "";
+    }
   };
 
   const handleOrder = () => {

@@ -7,7 +7,9 @@ import Index from "./pages/Index";
 import Customize from "./pages/Customize";
 import OrderForm from "./pages/OrderForm";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +23,10 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/customize" element={<Customize />} />
           <Route path="/order" element={<OrderForm />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route element={<AdminProtectedRoute />}>
+            <Route path="/admin" element={<Admin />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

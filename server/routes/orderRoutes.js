@@ -1,4 +1,5 @@
 import express from "express";
+import { requireAdminAuth } from "../config/adminAuth.js";
 import {
   createOrder,
   getAllOrders,
@@ -8,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.route("/").post(createOrder).get(getAllOrders);
-router.route("/:id").get(getOrderById).put(updateOrderStatus);
+router.route("/").post(createOrder).get(requireAdminAuth, getAllOrders);
+router.route("/:id").get(requireAdminAuth, getOrderById).put(requireAdminAuth, updateOrderStatus);
 
 export default router;

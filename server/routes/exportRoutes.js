@@ -1,4 +1,5 @@
 import express from "express";
+import { requireAdminAuth } from "../config/adminAuth.js";
 import {
   exportOrdersCsv,
   exportOrdersExcel,
@@ -7,8 +8,8 @@ import {
 
 const router = express.Router();
 
-router.get("/csv", exportOrdersCsv);
-router.get("/excel", exportOrdersExcel);
-router.get("/pdf", exportOrdersPdf);
+router.get("/csv", requireAdminAuth, exportOrdersCsv);
+router.get("/excel", requireAdminAuth, exportOrdersExcel);
+router.get("/pdf", requireAdminAuth, exportOrdersPdf);
 
 export default router;

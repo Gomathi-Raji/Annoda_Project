@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import api, { ADMIN_TOKEN_KEY } from "@/lib/api";
 
 const statusStyles: Record<string, string> = {
   Pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
@@ -48,6 +49,7 @@ interface UpdateOrderResponse {
 }
 
 const Admin = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [filter, setFilter] = useState<"All" | OrderStatus>("All");
   const [loading, setLoading] = useState(true);
@@ -59,10 +61,19 @@ const Admin = () => {
     try {
       setLoading(true);
       setError("");
-      const response = await axios.get<OrdersResponse>("/api/orders");
+      const response = await api.get<OrdersResponse>("/api/orders");
       setOrders(response.data.data || []);
     } catch (requestError) {
       console.error(requestError);
+      if (typeof requestError === "object" && requestError && "response" in requestError) {
+        const status = (requestError as { response?: { status?: number } }).response?.status;
+        if (status === 401) {
+          localStorage.removeItem(ADMIN_TOKEN_KEY);
+          navigate("/admin/login", { replace: true });
+          return;
+        }
+      }
+
       setError("Failed to load orders");
     } finally {
       setLoading(false);
@@ -81,7 +92,7 @@ const Admin = () => {
   const updateStatus = async (id: string, status: OrderStatus) => {
     try {
       setUpdatingOrderId(id);
-      const response = await axios.put<UpdateOrderResponse>(`/api/orders/${id}`, { status });
+      const response = await api.put<UpdateOrderResponse>(`/api/orders/${id}`, { status });
       const updatedOrder = response.data.data;
       setOrders((prev) => prev.map((order) => (order._id === id ? updatedOrder : order)));
     } catch (requestError) {
@@ -101,7 +112,7 @@ const Admin = () => {
       setExportLoading(type);
       setError("");
 
-      const response = await axios.get(endpoint, { responseType: "blob" });
+      const response = await api.get(endpoint, { responseType: "blob" });
       const fileUrl = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
 
@@ -116,6 +127,17 @@ const Admin = () => {
       setError("Failed to export orders. Please try again.");
     } finally {
       setExportLoading(null);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await api.post("/api/admin/logout");
+    } catch (requestError) {
+      console.error(requestError);
+    } finally {
+      localStorage.removeItem(ADMIN_TOKEN_KEY);
+      navigate("/admin/login", { replace: true });
     }
   };
 
@@ -140,6 +162,9 @@ const Admin = () => {
                 </SelectContent>
               </Select>
             </div>
+            <Button variant="outline" onClick={logout} className="font-heading uppercase tracking-wider">
+              Logout
+            </Button>
           </div>
 
           {error && <p className="mb-4 text-sm text-destructive">{error}</p>}
