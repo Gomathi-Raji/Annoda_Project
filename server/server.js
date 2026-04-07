@@ -11,7 +11,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use("/api/orders", orderRoutes);
 app.use("/api/export", exportRoutes);
@@ -31,6 +32,13 @@ app.use((req, res) => {
 });
 
 app.use((error, _req, res, _next) => {
+  if (error.type === "entity.too.large") {
+    return res.status(413).json({
+      success: false,
+      message: "Request payload too large"
+    });
+  }
+
   if (error.name === "ValidationError") {
     return res.status(400).json({
       success: false,

@@ -1,5 +1,8 @@
 import { useEffect, useRef } from "react";
-import { fabric } from "fabric";
+import { Canvas as FabricCanvas, IText, Image as FabricImage } from "fabric";
+import { Canvas as ThreeCanvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import * as THREE from "three";
 
 interface TshirtCanvasProps {
   color: string;
@@ -26,13 +29,15 @@ const TshirtCanvas = ({
   onPreviewChange,
   onObjectCountChange
 }: TshirtCanvasProps) => {
-  const canvasElementRef = useRef<HTMLCanvasElement | null>(null);
-  const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
+  const designCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const fabricCanvasRef = useRef<FabricCanvas | null>(null);
+  const textureRef = useRef<THREE.CanvasTexture | null>(null);
+  const textureSourceRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    if (!canvasElementRef.current) return;
+    if (!designCanvasRef.current) return;
 
-    const canvas = new fabric.Canvas(canvasElementRef.current, {
+    const canvas = new FabricCanvas(designCanvasRef.current, {
       width: 320,
       height: 400,
       preserveObjectStacking: true,
@@ -41,10 +46,18 @@ const TshirtCanvas = ({
 
     canvas.backgroundColor = "transparent";
     canvas.renderAll();
+    textureSourceRef.current = canvas.lowerCanvasEl;
+
+    textureRef.current = new THREE.CanvasTexture(canvas.lowerCanvasEl);
+    textureRef.current.needsUpdate = true;
 
     const syncState = () => {
       onObjectCountChange(canvas.getObjects().length);
       onPreviewChange(canvas.toDataURL({ format: "png", quality: 1 }));
+
+      if (textureRef.current) {
+        textureRef.current.needsUpdate = true;
+      }
     };
 
     canvas.on("object:added", syncState);
@@ -57,6 +70,12 @@ const TshirtCanvas = ({
     return () => {
       canvas.dispose();
       fabricCanvasRef.current = null;
+      textureSourceRef.current = null;
+
+      if (textureRef.current) {
+        textureRef.current.dispose();
+        textureRef.current = null;
+      }
     };
   }, [onObjectCountChange, onPreviewChange]);
 
@@ -64,7 +83,7 @@ const TshirtCanvas = ({
     const canvas = fabricCanvasRef.current;
     if (!canvas || addTextTrigger === 0 || !textToAdd.trim()) return;
 
-    const textObject = new fabric.IText(textToAdd, {
+    const textObject = new IText(textToAdd, {
       left: 110,
       top: 120,
       fill: textColor,
@@ -82,7 +101,7 @@ const TshirtCanvas = ({
     const canvas = fabricCanvasRef.current;
     if (!canvas || addImageTrigger === 0 || !imageToAdd) return;
 
-    fabric.Image.fromURL(imageToAdd, (image) => {
+    FabricImage.fromURL(imageToAdd).then((image) => {
       image.set({
         left: 110,
         top: 140,
@@ -96,21 +115,66 @@ const TshirtCanvas = ({
     });
   }, [addImageTrigger, imageToAdd]);
 
+  const TshirtModel = () => {
+    const sharedTexture = textureRef.current;
+    const isFront = view === "front";
+
+    return (
+      <group rotation={[0, isFront ? 0 : Math.PI, 0]}>
+        <mesh position={[0, 0, 0]} castShadow receiveShadow>
+          <boxGeometry args={[2.25, 2.6, 0.7]} />
+          <meshStandardMaterial color={color} roughness={0.8} metalness={0.05} />
+        </mesh>
+
+        <mesh position={[-1.45, 0.45, 0]} rotation={[0, 0, Math.PI / 10]} castShadow receiveShadow>
+          <boxGeometry args={[0.85, 1.05, 0.7]} />
+          <meshStandardMaterial color={color} roughness={0.8} metalness={0.05} />
+        </mesh>
+
+        <mesh position={[1.45, 0.45, 0]} rotation={[0, 0, -Math.PI / 10]} castShadow receiveShadow>
+          <boxGeometry args={[0.85, 1.05, 0.7]} />
+          <meshStandardMaterial color={color} roughness={0.8} metalness={0.05} />
+        </mesh>
+
+        <mesh position={[0, 1.35, 0.2]}>
+          <torusGeometry args={[0.45, 0.08, 12, 36, Math.PI]} />
+          <meshStandardMaterial color="#d1d5db" roughness={0.9} metalness={0.02} />
+        </mesh>
+
+        {sharedTexture && (
+          <mesh position={[0, 0.1, 0.37]} castShadow>
+            <planeGeometry args={[1.1, 1.45]} />
+            <meshStandardMaterial
+              map={sharedTexture}
+              transparent
+              alphaTest={0.05}
+              side={THREE.DoubleSide}
+              roughness={0.9}
+            />
+          </mesh>
+        )}
+      </group>
+    );
+  };
+
   return (
     <div className="flex flex-col items-center gap-3">
       <span className="font-heading text-sm uppercase tracking-widest text-muted-foreground">{view} view</span>
-      <div
-        className="relative w-[280px] h-[340px] md:w-[320px] md:h-[400px] rounded-lg border-2 border-border overflow-hidden"
-        style={{ backgroundColor: color }}
-      >
-        <svg viewBox="0 0 320 400" className="absolute inset-0 w-full h-full opacity-15 pointer-events-none">
-          <path
-            d="M80,40 L40,80 L70,100 L70,360 L250,360 L250,100 L280,80 L240,40 L200,60 L120,60 Z"
-            fill="currentColor"
-            className="text-foreground"
-          />
-        </svg>
-        <canvas ref={canvasElementRef} className="absolute inset-0" />
+      <div className="w-[280px] h-[340px] md:w-[320px] md:h-[400px] rounded-lg border-2 border-border overflow-hidden bg-gradient-to-b from-secondary/70 to-background">
+        <ThreeCanvas shadows camera={{ position: [0, 0.25, 4.4], fov: 40 }}>
+          <ambientLight intensity={0.85} />
+          <directionalLight position={[3, 6, 4]} intensity={1.2} castShadow />
+          <directionalLight position={[-3, 2, -2]} intensity={0.45} />
+          <TshirtModel />
+          <OrbitControls enablePan={false} minDistance={3.2} maxDistance={6.2} />
+        </ThreeCanvas>
+      </div>
+
+      <div className="w-[280px] md:w-[320px] rounded-lg border border-border bg-card p-2">
+        <p className="mb-2 text-[10px] font-heading uppercase tracking-widest text-muted-foreground">Design Editor (Drag / Resize / Rotate)</p>
+        <div className="relative h-[220px] w-full overflow-hidden rounded-md border border-border bg-secondary/20">
+          <canvas ref={designCanvasRef} className="absolute inset-0 h-full w-full" />
+        </div>
       </div>
     </div>
   );
