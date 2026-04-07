@@ -1,68 +1,169 @@
-# Kase Brothers - T-shirt Customization Platform
+# Kase Brothers
 
-Full-stack setup with:
+Full-stack T-shirt customization platform.
 
-- Frontend: React (Vite) + Tailwind CSS
+## Tech Stack
+
+- Frontend: React + Vite + Tailwind CSS
 - Backend: Node.js + Express
-- Database: MongoDB (Mongoose)
+- Database: MongoDB + Mongoose
+- Canvas Editor: Fabric.js
+- Export Tools: json2csv, exceljs, pdfkit
 
 ## Project Structure
 
-- `/server` -> Express API + MongoDB connection
-- `/client` -> Frontend folder placeholder
-- Frontend source is currently implemented at workspace root (`src`, `vite.config.ts`, `tailwind.config.ts`)
+```
+/
+├─ src/                     # React frontend (current active client)
+├─ server/                  # Express backend
+│  ├─ config/
+│  ├─ controllers/
+│  ├─ models/
+│  ├─ routes/
+│  ├─ .env.example
+│  └─ server.js
+└─ client/                  # Placeholder folder for future frontend move
+```
 
-## Backend Setup
+## Features
 
-Backend entrypoint: `/server/server.js`
+- T-shirt customization page
+	- Size and color selection
+	- Add editable text on canvas
+	- Upload and place logo/image
+	- Drag/resize/rotate via Fabric.js
+	- Live preview
+- Order form
+	- Validation for name, phone, address, pincode
+	- Saves orders to backend with preview image
+- Admin dashboard
+	- View all orders in table
+	- Filter by status
+	- Update status inline
+	- Export CSV / Excel / PDF
 
-- Express server initialized
-- MongoDB connection via Mongoose in `/server/config/db.js`
-- Health route: `GET /api/health`
+## Prerequisites
 
-## Frontend Setup
+- Node.js 18+
+- npm 9+
+- MongoDB running locally or a MongoDB Atlas connection string
 
-Frontend is already implemented with:
+## Environment Setup
 
-- Vite React app (root)
-- Tailwind CSS configured (`tailwind.config.ts`, `postcss.config.js`, `src/index.css`)
+Backend environment file location:
+
+- `server/.env`
+
+Required variables:
+
+```
+PORT=5000
+MONGO_URI=mongodb://127.0.0.1:27017/kase_brothers
+```
+
+You can copy from:
+
+- `server/.env.example`
 
 ## Installation
 
-From project root:
+From root project directory:
 
-1. Install frontend/root dependencies:
+```bash
+npm install
+cd server
+npm install
+cd ..
+```
 
-	 `npm install`
+## Run the App
 
-2. Install backend dependencies:
+From root project directory:
 
-	 `cd server && npm install`
+- Frontend only:
 
-3. Create backend env file:
+```bash
+npm run client:dev
+```
 
-	 - copy `/server/.env.example` to `/server/.env`
-	 - set `MONGO_URI` to your MongoDB connection string
+- Backend only:
 
-## Run
+```bash
+npm run server:dev
+```
 
-From project root:
+- Frontend + Backend together:
 
-- Run frontend only:
+```bash
+npm run dev:full
+```
 
-	`npm run client:dev`
+Default URLs:
 
-- Run backend only:
+- Frontend: `http://localhost:8080`
+- Backend: `http://localhost:5000`
 
-	`npm run server:dev`
+## API Reference
 
-- Run frontend + backend together:
+### Health
 
-	`npm run dev:full`
+- `GET /api/health`
 
-## Available Root Scripts
+### Orders
 
-- `dev` -> Starts frontend (Vite)
-- `client:dev` -> Starts frontend (Vite)
-- `server:dev` -> Starts backend from `/server`
-- `dev:full` -> Runs frontend + backend concurrently
+- `POST /api/orders` - Create order
+- `GET /api/orders` - Get all orders
+- `GET /api/orders/:id` - Get single order by MongoDB id
+- `PUT /api/orders/:id` - Update order status (`Pending`, `Contacted`, `Completed`)
+
+### Export
+
+- `GET /api/export/csv` - Download orders CSV
+- `GET /api/export/excel` - Download orders Excel (`.xlsx`)
+- `GET /api/export/pdf` - Download orders PDF
+
+Exported fields:
+
+- Order ID
+- Name
+- Phone
+- Product
+- Size
+- Color
+- Status
+- Date
+
+## Scripts
+
+### Root scripts
+
+- `npm run dev` - Frontend dev server
+- `npm run client:dev` - Frontend dev server
+- `npm run server:dev` - Backend dev server (from `server`)
+- `npm run dev:full` - Run frontend + backend together
+- `npm run build` - Frontend production build
+- `npm run lint` - Run ESLint
+- `npm run test` - Run tests
+
+### Server scripts
+
+Inside `server` directory:
+
+- `npm run dev` - Start backend in watch mode
+- `npm run start` - Start backend normally
+
+## Notes
+
+- Frontend uses Vite proxy for API routes (`/api`) to backend.
+- Keep `server/.env` private and never commit secrets.
+
+## Troubleshooting
+
+- If MongoDB connection fails:
+	- Verify `MONGO_URI` in `server/.env`
+	- Confirm MongoDB service is running
+- If export download fails:
+	- Ensure backend is running
+	- Check endpoint accessibility at `/api/export/*`
+- If lint fails:
+	- Run `npm run lint` and fix the reported files
