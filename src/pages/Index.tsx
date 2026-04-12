@@ -4,7 +4,7 @@ import { Paintbrush, Send, Phone } from "lucide-react";
 import MainLayout from "@/layouts/MainLayout";
 import DesignCard from "@/components/DesignCard";
 import { featuredDesigns } from "@/utils/mockData";
-import logo from "@/assets/kase-brothers-logo.png";
+import logo from "@/assets/1000518709-03.jpeg";
 import { Button } from "@/components/ui/button";
 
 const steps = [
@@ -22,7 +22,7 @@ const Index = () => (
         <motion.img
           src={logo}
           alt="Kase Brothers"
-          className="w-48 md:w-64 mb-4"
+          className="w-48 md:w-64 mb-4 rounded-full mix-blend-multiply drop-shadow-xl"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}

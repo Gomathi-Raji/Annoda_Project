@@ -13,6 +13,18 @@ import {
 } from "@/components/ui/table";
 import api, { ADMIN_TOKEN_KEY } from "@/lib/api";
 
+const downloadBlobAsFile = (blob: Blob, filename: string) => {
+  const fileUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = fileUrl;
+  link.setAttribute("download", filename);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(fileUrl);
+};
+
 const statusStyles: Record<string, string> = {
   Pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
   Contacted: "bg-blue-500/10 text-blue-400 border-blue-500/30",
@@ -141,6 +153,31 @@ const Admin = () => {
     }
   };
 
+  const downloadPreviewImage = async (imageUrl: string, order: AdminOrder) => {
+    try {
+      setError("");
+      const fileName = `${order.orderId || order._id}-tshirt-preview.png`;
+
+      if (imageUrl.startsWith("data:")) {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        downloadBlobAsFile(blob, fileName);
+        return;
+      }
+
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error("Failed to fetch image");
+      }
+
+      const blob = await response.blob();
+      downloadBlobAsFile(blob, fileName);
+    } catch (requestError) {
+      console.error(requestError);
+      setError("Failed to download T-shirt image.");
+    }
+  };
+
   return (
     <MainLayout>
       <section className="py-10">
@@ -227,11 +264,21 @@ const Admin = () => {
                       </TableCell>
                       <TableCell>
                         {order.design?.previewImage ? (
-                          <img
-                            src={order.design.previewImage}
-                            alt="Order preview"
-                            className="h-12 w-12 rounded-md border border-border object-cover"
-                          />
+                          <div className="space-y-2">
+                            <img
+                              src={order.design.previewImage}
+                              alt="Order preview"
+                              className="h-12 w-12 rounded-md border border-border object-cover"
+                            />
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => downloadPreviewImage(order.design!.previewImage!, order)}
+                              className="h-7 px-2 text-[10px] font-heading uppercase tracking-wider"
+                            >
+                              Download
+                            </Button>
+                          </div>
                         ) : (
                           <div className="flex h-12 w-12 items-center justify-center rounded-md border border-border bg-secondary/50 text-[10px] text-muted-foreground">
                             No Img
