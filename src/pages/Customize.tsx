@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Upload, Type, RotateCw } from "lucide-react";
+import { Upload, RotateCw } from "lucide-react";
 import MainLayout from "@/layouts/MainLayout";
 import TshirtCanvas from "@/components/TshirtCanvas";
 import { tshirtColors, sizes } from "@/utils/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 
 const Customize = () => {
   const navigate = useNavigate();
@@ -15,10 +14,6 @@ const Customize = () => {
   const [selectedSize, setSelectedSize] = useState("M");
   const [selectedColor, setSelectedColor] = useState(tshirtColors[0]);
   const [view, setView] = useState<"front" | "back">("front");
-  const [textInput, setTextInput] = useState("");
-  const [fontSize, setFontSize] = useState(24);
-  const [textColor, setTextColor] = useState("#ffffff");
-  const [addTextTrigger, setAddTextTrigger] = useState(0);
   const [addImageTrigger, setAddImageTrigger] = useState(0);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState("");
@@ -34,7 +29,7 @@ const Customize = () => {
 
   const optimizeImage = async (file: File) => {
     const bitmap = await createImageBitmap(file);
-    const maxDimension = 1024;
+    const maxDimension = 2048;
     const longestSide = Math.max(bitmap.width, bitmap.height);
     const scale = longestSide > maxDimension ? maxDimension / longestSide : 1;
 
@@ -63,18 +58,12 @@ const Customize = () => {
           resolve(blob);
         },
         "image/webp",
-        0.82
+        0.92
       );
     });
 
     bitmap.close();
     return URL.createObjectURL(optimizedBlob);
-  };
-
-  const addText = () => {
-    if (!textInput.trim()) return;
-    setAddTextTrigger((prev) => prev + 1);
-    setTextInput("");
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,30 +147,6 @@ const Customize = () => {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground block">
-                  <Type size={14} className="inline mr-1" /> Add Text
-                </Label>
-                <Input
-                  placeholder="Your text here..."
-                  value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
-                  className="bg-secondary border-border"
-                />
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs text-muted-foreground shrink-0">Size</Label>
-                  <Slider value={[fontSize]} onValueChange={([v]) => setFontSize(v)} min={12} max={48} step={1} className="flex-1" />
-                  <span className="text-xs text-muted-foreground w-6">{fontSize}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Label className="text-xs text-muted-foreground">Color</Label>
-                  <input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border-0" />
-                </div>
-                <Button size="sm" onClick={addText} className="w-full font-heading uppercase tracking-wider">
-                  Add Text
-                </Button>
-              </div>
-
               <div>
                 <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
                   <Upload size={14} className="inline mr-1" /> Upload Image
@@ -195,10 +160,10 @@ const Customize = () => {
               <TshirtCanvas
                 color={selectedColor.value}
                 view={view}
-                textToAdd={textInput}
-                textColor={textColor}
-                fontSize={fontSize}
-                addTextTrigger={addTextTrigger}
+                textToAdd=""
+                textColor="#ffffff"
+                fontSize={24}
+                addTextTrigger={0}
                 imageToAdd={uploadedImage}
                 addImageTrigger={addImageTrigger}
                 onPreviewChange={setPreviewImage}
