@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Upload, RotateCw } from "lucide-react";
 import MainLayout from "@/layouts/MainLayout";
 import TshirtCanvas from "@/components/TshirtCanvas";
-import { tshirtColors, sizes } from "@/utils/mockData";
+import { tshirtColors, sizes, tshirtTypes, sleeveOptions, fitOptions, fabricOptions } from "@/utils/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,10 @@ const Customize = () => {
   const objectUrlRef = useRef<string | null>(null);
   const [selectedSize, setSelectedSize] = useState("M");
   const [selectedColor, setSelectedColor] = useState(tshirtColors[0]);
+  const [selectedType, setSelectedType] = useState(tshirtTypes[0].name);
+  const [selectedSleeve, setSelectedSleeve] = useState(sleeveOptions[0]);
+  const [selectedFit, setSelectedFit] = useState(fitOptions[0]);
+  const [selectedFabric, setSelectedFabric] = useState(fabricOptions[0]);
   const [view, setView] = useState<"front" | "back">("front");
   const [addImageTrigger, setAddImageTrigger] = useState(0);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -95,7 +99,13 @@ const Customize = () => {
         size: selectedSize,
         color: selectedColor.name,
         colorValue: selectedColor.value,
-        previewImage
+        previewImage,
+        type: selectedType,
+        variants: {
+          sleeve: selectedSleeve,
+          fit: selectedFit,
+          fabric: selectedFabric
+        }
       }
     });
   };
@@ -112,6 +122,23 @@ const Customize = () => {
             {/* Left Panel: Controls */}
             <div className="space-y-6 rounded-lg border border-border bg-card p-5">
               <div>
+                <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">Type</Label>
+                <div className="flex gap-2 flex-wrap mb-4">
+                  {tshirtTypes.map((t) => (
+                    <button
+                      key={t.name}
+                      onClick={() => setSelectedType(t.name)}
+                      className={`px-3 py-2 rounded-md text-sm font-heading uppercase transition-colors border ${
+                        selectedType === t.name
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "border-border text-muted-foreground hover:border-primary/50"
+                      }`}
+                    >
+                      {t.name}
+                    </button>
+                  ))}
+                </div>
+
                 <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">Size</Label>
                 <div className="flex gap-2 flex-wrap">
                   {sizes.map((s) => (
@@ -131,6 +158,58 @@ const Customize = () => {
               </div>
 
               <div>
+                <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">Variants</Label>
+                <div className="mb-3">
+                  <Label className="font-heading text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Sleeve</Label>
+                  <div className="flex gap-2 flex-wrap">
+                    {sleeveOptions.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => setSelectedSleeve(opt)}
+                        className={`px-3 py-1 rounded-md text-sm transition-colors border ${
+                          selectedSleeve === opt ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <Label className="font-heading text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Fit</Label>
+                  <div className="flex gap-2 flex-wrap">
+                    {fitOptions.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => setSelectedFit(opt)}
+                        className={`px-3 py-1 rounded-md text-sm transition-colors border ${
+                          selectedFit === opt ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="font-heading text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Fabric</Label>
+                  <div className="flex gap-2 flex-wrap">
+                    {fabricOptions.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => setSelectedFabric(opt)}
+                        className={`px-3 py-1 rounded-md text-sm transition-colors border ${
+                          selectedFabric === opt ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">Color</Label>
                 <div className="flex gap-2 flex-wrap">
                   {tshirtColors.map((c) => (
@@ -181,6 +260,22 @@ const Customize = () => {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Size</span>
                   <span className="font-heading">{selectedSize}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Type</span>
+                  <span className="font-heading">{selectedType}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Sleeve</span>
+                  <span className="font-heading">{selectedSleeve}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Fit</span>
+                  <span className="font-heading">{selectedFit}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Fabric</span>
+                  <span className="font-heading">{selectedFabric}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Color</span>

@@ -9,9 +9,11 @@
     "server:dev": "npm run dev --prefix server",
     "dev:full": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
     "build": "vite build",
+    "build:full": "npm run build && cp -R dist server/public || true",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
+    "start:prod": "NODE_ENV=production npm --prefix server run start",
     "test": "vitest run",
     "test:watch": "vitest"
   },

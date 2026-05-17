@@ -1,6 +1,8 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import exportRoutes from "./routes/exportRoutes.js";
@@ -25,6 +27,28 @@ app.get("/api/health", (_req, res) => {
     message: "Kase Brothers API is running"
   });
 });
+
+// Serve client build in production
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const clientDist = path.join(__dirname, "..", "dist");
+const clientPublic = path.join(__dirname, "public");
+
+if (process.env.NODE_ENV === "production") {
+  try {
+    const fs = await import("fs");
+    if (fs.existsSync(clientDist)) {
+      app.use(express.static(clientDist));
+      app.get("/*", (_req, res) => res.sendFile(path.join(clientDist, "index.html")));
+    } else if (fs.existsSync(clientPublic)) {
+      app.use(express.static(clientPublic));
+      app.get("/*", (_req, res) => res.sendFile(path.join(clientPublic, "index.html")));
+    }
+  } catch (err) {
+    console.warn("Static file serving setup skipped:", err.message || err);
+  }
+}
 
 app.use((req, res) => {
   res.status(404).json({

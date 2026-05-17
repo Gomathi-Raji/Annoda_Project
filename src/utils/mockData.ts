@@ -30,6 +30,18 @@ export const tshirtColors = [
 
 export const sizes = ["S", "M", "L", "XL"];
 
+export const tshirtTypes = [
+  { name: "Crew Neck" },
+  { name: "V-Neck" },
+  { name: "Polo" },
+  { name: "Long Sleeve" },
+  { name: "Tank Top" }
+];
+
+export const sleeveOptions = ["Short Sleeve", "Half Sleeve", "Long Sleeve"];
+export const fitOptions = ["Regular", "Slim", "Relaxed"];
+export const fabricOptions = ["Cotton", "Polyester", "Cotton Blend", "Organic Cotton"];
+
 export const featuredDesigns = [
   { id: 1, name: "Street King", description: "Bold urban typography" },
   { id: 2, name: "Chain Gang", description: "Linked chain motif" },

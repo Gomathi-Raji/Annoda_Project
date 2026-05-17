@@ -12,6 +12,8 @@ interface OrderLocationState {
   color?: string;
   colorValue?: string;
   previewImage?: string;
+  type?: string;
+  variants?: { sleeve?: string; fit?: string; fabric?: string };
 }
 
 interface FormState {
@@ -27,7 +29,9 @@ const OrderForm = () => {
     size = "M",
     color = "Black",
     colorValue = "#1a1a1a",
-    previewImage = ""
+    previewImage = "",
+    type = "T-shirt",
+    variants = { sleeve: "Short Sleeve", fit: "Regular", fabric: "Cotton" }
   } = (location.state as OrderLocationState) || {};
 
   const [form, setForm] = useState<FormState>({ name: "", phone: "", address: "", pincode: "" });
@@ -61,9 +65,10 @@ const OrderForm = () => {
         address: form.address.trim(),
         pincode: form.pincode.trim(),
         product: {
-          type: "T-shirt",
+          type,
           size,
-          color
+          color,
+          variants
         },
         design: {
           imageUrl: "",
@@ -123,8 +128,9 @@ const OrderForm = () => {
                 )}
               </div>
               <div className="text-sm space-y-1 text-center">
-                <p><span className="text-muted-foreground">Product:</span> <span className="font-heading">T-shirt</span></p>
+                <p><span className="text-muted-foreground">Product:</span> <span className="font-heading">{type}</span></p>
                 <p><span className="text-muted-foreground">Size:</span> <span className="font-heading">{size}</span></p>
+                <p><span className="text-muted-foreground">Variants:</span> <span className="font-heading">{variants.sleeve}, {variants.fit}, {variants.fabric}</span></p>
                 <p className="flex items-center justify-center gap-2">
                   <span className="text-muted-foreground">Color:</span>
                   <span className="w-3 h-3 rounded-full border border-border inline-block" style={{ backgroundColor: colorValue }} />
