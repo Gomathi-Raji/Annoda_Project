@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Paintbrush, Send, Phone } from "lucide-react";
+import { Paintbrush, Send, Phone, Sparkles } from "lucide-react";
 import MainLayout from "@/layouts/MainLayout";
 import DesignCard from "@/components/DesignCard";
 import { featuredDesigns } from "@/utils/mockData";
-import logo from "@/assets/1000518709-03.jpeg";
 import { Button } from "@/components/ui/button";
+
+const introImage = "/1000518709-03.jpeg";
 
 const steps = [
   { icon: Paintbrush, title: "Customize", desc: "Design your tee with our builder" },
@@ -15,42 +16,49 @@ const steps = [
 
 const Index = () => (
   <MainLayout>
-    {/* Hero */}
-    <section className="relative overflow-hidden py-24 md:py-36">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-      <div className="container flex flex-col items-center text-center gap-6">
-        <motion.img
-          src={logo}
-          alt="Kase Brothers"
-          className="w-48 md:w-64 mb-4 rounded-full mix-blend-multiply drop-shadow-xl"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7 }}
-        />
-        <motion.h1
-          className="font-heading text-4xl md:text-6xl lg:text-7xl text-foreground"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          Design Your Own <span className="text-gradient">T-Shirt</span>
-        </motion.h1>
-        <motion.p
-          className="text-muted-foreground text-lg md:text-xl max-w-md"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-        >
-          Create unique styles with our customization tool
-        </motion.p>
+    {/* Intro Card */}
+    <section className="relative overflow-hidden py-10 md:py-16">
+      <div className="container">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          className="grid gap-0 overflow-hidden rounded-3xl border border-border bg-card/95 shadow-2xl shadow-black/20 md:grid-cols-2"
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
+          transition={{ duration: 0.7 }}
         >
-          <Button asChild size="lg" className="font-heading uppercase tracking-widest glow-primary">
-            <Link to="/customize">Start Customizing</Link>
-          </Button>
+          <div className="relative min-h-[320px] md:min-h-full">
+            <div className="absolute inset-0 bg-gradient-to-tr from-background via-background/10 to-primary/25" />
+            <img
+              src={introImage}
+              alt="Annoda intro"
+              className="h-full w-full object-cover"
+            />
+          </div>
+
+          <div className="flex flex-col justify-center gap-6 p-8 md:p-12 text-left">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+              <Sparkles size={16} />
+              Welcome to Annoda
+            </div>
+
+            <div className="space-y-4">
+              <h1 className="font-heading text-4xl md:text-6xl text-foreground leading-tight">
+                Design Your Own <span className="text-gradient">T-Shirt</span>
+              </h1>
+              <p className="max-w-xl text-base md:text-lg text-muted-foreground">
+                Start with a bold idea, customize your shirt, and place an order in a few quick steps.
+                This opening card gives visitors a clear first look at what Annoda offers.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Button asChild size="lg" className="font-heading uppercase tracking-widest glow-primary">
+                <Link to="/customize">Start Customizing</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="font-heading uppercase tracking-widest">
+                <Link to="/order">Order Now</Link>
+              </Button>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>
