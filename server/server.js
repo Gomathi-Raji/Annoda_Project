@@ -8,12 +8,25 @@ import adminRoutes from "./routes/adminRoutes.js";
 import exportRoutes from "./routes/exportRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
+dotenv.config({ path: path.resolve(__dirname, ".env"), override: true });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
+const allowedOrigins = CORS_ORIGIN.split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: CORS_ORIGIN === "*" ? true : allowedOrigins,
+    credentials: true
+  })
+);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
@@ -29,8 +42,6 @@ app.get("/api/health", (_req, res) => {
 });
 
 // Serve client build in production
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const clientDist = path.join(__dirname, "..", "dist");
 const clientPublic = path.join(__dirname, "public");

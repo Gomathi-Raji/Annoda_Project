@@ -50,20 +50,30 @@ Full-stack T-shirt customization platform.
 
 ## Environment Setup
 
-Backend environment file location:
+Use a common root environment file for both frontend and backend:
 
-- `server/.env`
+- `.env` (project root)
 
-Required variables:
+Create it from:
+
+- `.env.example`
+
+Minimum required values:
 
 ```
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/kase_brothers
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=...
+VITE_FIREBASE_PROJECT_ID=...
+VITE_FIREBASE_STORAGE_BUCKET=...
+VITE_FIREBASE_MESSAGING_SENDER_ID=...
+VITE_FIREBASE_APP_ID=...
 ```
 
-You can copy from:
+Optional server override file:
 
-- `server/.env.example`
+- `server/.env` (overrides matching values from root `.env`)
 
 ## Installation
 
@@ -155,12 +165,12 @@ Inside `server` directory:
 ## Notes
 
 - Frontend uses Vite proxy for API routes (`/api`) to backend.
-- Keep `server/.env` private and never commit secrets.
+- Keep `.env` and `server/.env` private and never commit secrets.
 
 ## Troubleshooting
 
 - If MongoDB connection fails:
-	- Verify `MONGO_URI` in `server/.env`
+	- Verify `MONGO_URI` in `.env` (or `server/.env` if using overrides)
 	- Confirm MongoDB service is running
 - If export download fails:
 	- Ensure backend is running

@@ -2,14 +2,29 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
+const missingFirebaseEnvVars = [
+  "VITE_FIREBASE_API_KEY",
+  "VITE_FIREBASE_AUTH_DOMAIN",
+  "VITE_FIREBASE_PROJECT_ID",
+  "VITE_FIREBASE_STORAGE_BUCKET",
+  "VITE_FIREBASE_MESSAGING_SENDER_ID",
+  "VITE_FIREBASE_APP_ID"
+].filter((key) => !import.meta.env[key]);
+
+if (missingFirebaseEnvVars.length > 0) {
+  throw new Error(
+    `Missing required Firebase environment variables: ${missingFirebaseEnvVars.join(", ")}`
+  );
+}
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBpHHyQosouwVPOAJbOWn9VweKu8plz-ow",
-  authDomain: "annoda-project.firebaseapp.com",
-  projectId: "annoda-project",
-  storageBucket: "annoda-project.firebasestorage.app",
-  messagingSenderId: "413487269537",
-  appId: "1:413487269537:web:cc15a12d0b31b357e412e0",
-  measurementId: "G-RKG2XMKZ25"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
