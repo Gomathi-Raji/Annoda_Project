@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import api from "@/lib/api";
 
 const Customize = () => {
   const navigate = useNavigate();
@@ -24,13 +25,42 @@ const Customize = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [objectCount, setObjectCount] = useState(0);
 
+  const [pricing, setPricing] = useState({
+    basePrice: 499,
+    typeAdditions: {} as Record<string, number>,
+    sizeAdditions: {} as Record<string, number>,
+    fabricAdditions: {} as Record<string, number>,
+  });
+
   useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        const response = await api.get("/api/pricing");
+        if (response.data?.success) {
+          setPricing({
+            basePrice: response.data.data.basePrice,
+            typeAdditions: response.data.data.typeAdditions || {},
+            sizeAdditions: response.data.data.sizeAdditions || {},
+            fabricAdditions: response.data.data.fabricAdditions || {},
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load pricing config:", err);
+      }
+    };
+    fetchPricing();
+
     return () => {
       if (objectUrlRef.current) {
         URL.revokeObjectURL(objectUrlRef.current);
       }
     };
   }, []);
+
+  const currentPrice = pricing.basePrice + 
+    (pricing.typeAdditions[selectedType] || 0) + 
+    (pricing.sizeAdditions[selectedSize] || 0) + 
+    (pricing.fabricAdditions[selectedFabric] || 0);
 
   const optimizeImage = async (file: File) => {
     const bitmap = await createImageBitmap(file);
@@ -106,7 +136,8 @@ const Customize = () => {
           sleeve: selectedSleeve,
           fit: selectedFit,
           fabric: selectedFabric
-        }
+        },
+        price: currentPrice
       }
     });
   };
@@ -317,6 +348,11 @@ const Customize = () => {
         </div>
         <div className="flex justify-between"><span className="text-muted-foreground">Elements</span><span className="font-heading">{objectCount}</span></div>
         <div className="flex justify-between"><span className="text-muted-foreground">View</span><span className="font-heading capitalize">{view}</span></div>
+        
+        <div className="flex justify-between border-t border-border pt-2 mt-2 text-primary font-bold">
+          <span className="font-heading uppercase tracking-wider text-xs">Total Price</span>
+          <span className="font-heading text-base">₹{currentPrice}</span>
+        </div>
       </div>
 
       <div className="rounded-xl border border-border bg-secondary/30 p-3">

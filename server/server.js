@@ -7,6 +7,7 @@ import connectDB from "./config/db.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import exportRoutes from "./routes/exportRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import pricingRoutes from "./routes/pricingRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,6 +34,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/api/admin", adminRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/export", exportRoutes);
+app.use("/api/pricing", pricingRoutes);
 
 app.get("/api/health", (_req, res) => {
   res.status(200).json({
