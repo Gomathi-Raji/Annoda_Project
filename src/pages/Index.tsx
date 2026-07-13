@@ -22,6 +22,41 @@ const steps = [
   { icon: Phone, title: "We Contact You", desc: "We confirm and deliver your order" },
 ];
 
+const instagramDrops = [
+  {
+    id: "drop-1",
+    title: "Ajith Kumar Racing Edition",
+    desc: "Ajith Kumar Racing spirit design. Oversized premium 240 GSM green tee with high-definition graphic print.",
+    image: "/ajith_kumar.png",
+    link: "https://www.instagram.com/p/DagM-9ay0LZ/",
+    badge: "Racing Edition"
+  },
+  {
+    id: "drop-2",
+    title: "Cristiano Ronaldo CR7",
+    desc: "Premium oversized CR7 T-shirt designed for true football fans. 240 GSM heavyweight cotton with high-quality DTF print.",
+    image: "/ronaldo.png",
+    link: "https://www.instagram.com/p/DaV6IY_kiO9/?img_index=1",
+    badge: "Football Legend"
+  },
+  {
+    id: "drop-3",
+    title: "King Kohli 18 Polo",
+    desc: "Premium black polo T-shirt featuring team identity and custom golden crown/18 prints. Built for comfort and class.",
+    image: "/kohli.png",
+    link: "https://www.instagram.com/p/DaPTek7EkOV/?img_index=1",
+    badge: "Premium Polo"
+  },
+  {
+    id: "drop-4",
+    title: "Fight Club Lion",
+    desc: "White oversized T-shirt with signature front print and detailed roaring green lion graphic on the back. Just let go.",
+    image: "/fight_club.png",
+    link: "https://www.instagram.com/p/DaGgfPnSf8f/",
+    badge: "Oversized Fit"
+  }
+];
+
 const Index = () => (
   <MainLayout>
     {/* Hero Section with Video Background */}
@@ -125,6 +160,59 @@ const Index = () => (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           {featuredDesigns.map((d, i) => (
             <DesignCard key={d.id} name={d.name} description={d.description} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* Instagram Drops Showcase */}
+    <section className="py-20 bg-background border-t border-border">
+      <div className="container">
+        <div className="text-center mb-12">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary mb-2">Social Feed</p>
+          <h2 className="font-heading text-3xl md:text-4xl text-center">
+            Latest <span className="text-primary">Instagram Drops</span>
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">
+            Check out our latest collections, limited edition prints, and client favorites straight from Instagram.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {instagramDrops.map((drop) => (
+            <motion.div
+              key={drop.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-lg flex flex-col hover:border-primary/30 transition-colors"
+            >
+              <div className="aspect-[4/5] bg-secondary overflow-hidden relative">
+                <img 
+                  src={drop.image} 
+                  alt={drop.title} 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <a 
+                    href={drop.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="bg-primary text-primary-foreground font-heading uppercase tracking-widest text-xs px-4 py-2 rounded-full hover:scale-105 transition-transform duration-200"
+                  >
+                    View Post
+                  </a>
+                </div>
+              </div>
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <div>
+                  <span className="text-[10px] font-heading uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">{drop.badge}</span>
+                  <h3 className="font-heading text-lg text-foreground mt-3">{drop.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1 line-clamp-3">{drop.desc}</p>
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
