@@ -191,9 +191,9 @@ const TshirtCanvas = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex w-full flex-col items-center gap-3">
       <span className="font-heading text-sm uppercase tracking-widest text-muted-foreground">{view} view</span>
-      <div className="w-[280px] h-[340px] md:w-[320px] md:h-[400px] rounded-lg border-2 border-border overflow-hidden bg-gradient-to-b from-secondary/70 to-background">
+      <div className="h-[320px] w-full max-w-[360px] overflow-hidden rounded-xl border-2 border-border bg-gradient-to-b from-secondary/70 to-background sm:h-[380px] md:h-[400px]">
         <ThreeCanvas shadows dpr={[1, 2]} camera={{ position: [0, 0.25, 4.4], fov: 40 }}>
           <ambientLight intensity={0.85} />
           <directionalLight position={[3, 6, 4]} intensity={1.2} castShadow />
@@ -203,7 +203,7 @@ const TshirtCanvas = ({
         </ThreeCanvas>
       </div>
 
-      <div className="w-[280px] md:w-[320px] rounded-lg border border-border bg-card p-3">
+      <div className="w-full max-w-[360px] rounded-xl border border-border bg-card p-3">
         <div className="mb-2 flex items-center justify-between">
           <p className="text-[10px] font-heading uppercase tracking-widest text-muted-foreground">Zoom</p>
           <span className="text-xs text-muted-foreground">{zoomValue}%</span>
@@ -236,7 +236,7 @@ const TshirtCanvas = ({
         </div>
       </div>
 
-      <div className="w-[280px] md:w-[320px] rounded-lg border border-border bg-card p-2">
+      <div className="w-full max-w-[360px] rounded-xl border border-border bg-card p-2">
         <p className="mb-2 text-[10px] font-heading uppercase tracking-widest text-muted-foreground">Design Editor (Drag / Resize / Rotate)</p>
         <div className="relative aspect-[4/5] w-full overflow-hidden rounded-md border border-border bg-secondary/20">
           <canvas ref={designCanvasRef} className="absolute inset-0 h-full w-full" />

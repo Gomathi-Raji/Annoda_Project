@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Upload, RotateCw } from "lucide-react";
+import { CheckCircle2, Palette, Shirt, SlidersHorizontal, Upload } from "lucide-react";
 import MainLayout from "@/layouts/MainLayout";
 import TshirtCanvas from "@/components/TshirtCanvas";
 import { tshirtColors, sizes, tshirtTypes, sleeveOptions, fitOptions, fabricOptions } from "@/utils/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Customize = () => {
   const navigate = useNavigate();
@@ -110,203 +111,274 @@ const Customize = () => {
     });
   };
 
+  const controlsPanel = (
+    <div className="space-y-5">
+      <div className="rounded-2xl border border-border/80 bg-card/90 p-4 shadow-lg md:p-5">
+        <div className="mb-3 flex items-center gap-2 text-primary">
+          <Shirt size={16} />
+          <Label className="text-xs uppercase tracking-[0.18em] text-primary">Base Style</Label>
+        </div>
+
+        <Label className="mb-2 block text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Type</Label>
+        <div className="mb-4 grid grid-cols-2 gap-2">
+          {tshirtTypes.map((t) => (
+            <button
+              key={t.name}
+              onClick={() => setSelectedType(t.name)}
+              className={`rounded-xl border px-3 py-2 text-xs font-heading uppercase transition-colors md:text-sm ${
+                selectedType === t.name
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/40"
+              }`}
+            >
+              {t.name}
+            </button>
+          ))}
+        </div>
+
+        <Label className="mb-2 block text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Size</Label>
+        <div className="grid grid-cols-5 gap-2">
+          {sizes.map((s) => (
+            <button
+              key={s}
+              onClick={() => setSelectedSize(s)}
+              className={`rounded-xl border px-2 py-2 text-xs font-heading uppercase transition-colors md:text-sm ${
+                selectedSize === s
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/40"
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-border/80 bg-card/90 p-4 shadow-lg md:p-5">
+        <div className="mb-3 flex items-center gap-2 text-primary">
+          <SlidersHorizontal size={16} />
+          <Label className="text-xs uppercase tracking-[0.18em] text-primary">Variants</Label>
+        </div>
+
+        <div className="mb-4">
+          <Label className="mb-2 block text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Sleeve</Label>
+          <div className="flex flex-wrap gap-2">
+            {sleeveOptions.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => setSelectedSleeve(opt)}
+                className={`rounded-xl border px-3 py-2 text-xs transition-colors md:text-sm ${
+                  selectedSleeve === opt
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <Label className="mb-2 block text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Fit</Label>
+          <div className="flex flex-wrap gap-2">
+            {fitOptions.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => setSelectedFit(opt)}
+                className={`rounded-xl border px-3 py-2 text-xs transition-colors md:text-sm ${
+                  selectedFit === opt
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <Label className="mb-2 block text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Fabric</Label>
+          <div className="flex flex-wrap gap-2">
+            {fabricOptions.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => setSelectedFabric(opt)}
+                className={`rounded-xl border px-3 py-2 text-xs transition-colors md:text-sm ${
+                  selectedFabric === opt
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/40"
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-border/80 bg-card/90 p-4 shadow-lg md:p-5">
+        <div className="mb-3 flex items-center gap-2 text-primary">
+          <Palette size={16} />
+          <Label className="text-xs uppercase tracking-[0.18em] text-primary">Color & Artwork</Label>
+        </div>
+
+        <Label className="mb-2 block text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Color</Label>
+        <div className="mb-4 flex flex-wrap gap-2">
+          {tshirtColors.map((c) => (
+            <button
+              key={c.name}
+              onClick={() => setSelectedColor(c)}
+              title={c.name}
+              className={`h-10 w-10 rounded-full border-2 transition-transform ${
+                selectedColor.name === c.name ? "scale-110 border-primary" : "border-border"
+              }`}
+              style={{ backgroundColor: c.value }}
+            />
+          ))}
+        </div>
+
+        <Label className="mb-2 block text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+          <Upload size={13} className="mr-1 inline" /> Upload Image
+        </Label>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="border-border bg-secondary/40 text-sm"
+        />
+      </div>
+    </div>
+  );
+
+  const canvasPanel = (
+    <div className="rounded-2xl border border-border/80 bg-card/90 p-4 shadow-xl md:p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Live 3D Canvas</p>
+        <div className="rounded-full border border-border bg-secondary/40 p-1">
+          <button
+            type="button"
+            onClick={() => setView("front")}
+            className={`rounded-full px-3 py-1 text-xs font-heading uppercase transition-colors ${
+              view === "front" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+            }`}
+          >
+            Front
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("back")}
+            className={`rounded-full px-3 py-1 text-xs font-heading uppercase transition-colors ${
+              view === "back" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+            }`}
+          >
+            Back
+          </button>
+        </div>
+      </div>
+
+      <TshirtCanvas
+        color={selectedColor.value}
+        view={view}
+        textToAdd=""
+        textColor="#ffffff"
+        fontSize={24}
+        addTextTrigger={0}
+        imageToAdd={uploadedImage}
+        addImageTrigger={addImageTrigger}
+        onPreviewChange={setPreviewImage}
+        onObjectCountChange={setObjectCount}
+      />
+    </div>
+  );
+
+  const summaryPanel = (
+    <div className="space-y-4 rounded-2xl border border-border/80 bg-card/90 p-4 shadow-lg md:p-5 xl:sticky xl:top-24">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm uppercase tracking-[0.18em] text-primary">Design Summary</h3>
+        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] uppercase tracking-wider text-primary">
+          <CheckCircle2 size={12} /> Ready
+        </span>
+      </div>
+
+      <div className="space-y-2 text-sm">
+        <div className="flex justify-between"><span className="text-muted-foreground">Size</span><span className="font-heading">{selectedSize}</span></div>
+        <div className="flex justify-between"><span className="text-muted-foreground">Type</span><span className="font-heading">{selectedType}</span></div>
+        <div className="flex justify-between"><span className="text-muted-foreground">Sleeve</span><span className="font-heading">{selectedSleeve}</span></div>
+        <div className="flex justify-between"><span className="text-muted-foreground">Fit</span><span className="font-heading">{selectedFit}</span></div>
+        <div className="flex justify-between"><span className="text-muted-foreground">Fabric</span><span className="font-heading">{selectedFabric}</span></div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Color</span>
+          <div className="flex items-center gap-2">
+            <span className="h-4 w-4 rounded-full border border-border" style={{ backgroundColor: selectedColor.value }} />
+            <span className="font-heading">{selectedColor.name}</span>
+          </div>
+        </div>
+        <div className="flex justify-between"><span className="text-muted-foreground">Elements</span><span className="font-heading">{objectCount}</span></div>
+        <div className="flex justify-between"><span className="text-muted-foreground">View</span><span className="font-heading capitalize">{view}</span></div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-secondary/30 p-3">
+        <p className="mb-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">Live Preview</p>
+        <div className="aspect-[4/5] overflow-hidden rounded-md bg-background/80">
+          {previewImage ? (
+            <img src={previewImage} alt="T-shirt design preview" className="h-full w-full object-contain" />
+          ) : (
+            <div className="flex h-full items-center justify-center text-xs text-muted-foreground">Add image to generate preview</div>
+          )}
+        </div>
+      </div>
+
+      <Button onClick={handleOrder} size="lg" className="w-full font-heading uppercase tracking-widest glow-primary">
+        Order Now
+      </Button>
+    </div>
+  );
+
   return (
     <MainLayout>
-      <section className="py-10">
-        <div className="container">
-          <h1 className="font-heading text-3xl md:text-4xl text-center mb-8">
-            Customize Your <span className="text-gradient">Tee</span>
-          </h1>
+      <section className="relative overflow-hidden pb-24 pt-8 md:pt-10">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.18),transparent_40%),radial-gradient(circle_at_bottom_left,hsl(var(--accent)/0.12),transparent_35%)]" />
 
-          <div className="grid lg:grid-cols-[280px_1fr_280px] gap-6">
-            {/* Left Panel: Controls */}
-            <div className="space-y-6 rounded-lg border border-border bg-card p-5">
-              <div>
-                <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">Type</Label>
-                <div className="flex gap-2 flex-wrap mb-4">
-                  {tshirtTypes.map((t) => (
-                    <button
-                      key={t.name}
-                      onClick={() => setSelectedType(t.name)}
-                      className={`px-3 py-2 rounded-md text-sm font-heading uppercase transition-colors border ${
-                        selectedType === t.name
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "border-border text-muted-foreground hover:border-primary/50"
-                      }`}
-                    >
-                      {t.name}
-                    </button>
-                  ))}
-                </div>
-
-                <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">Size</Label>
-                <div className="flex gap-2 flex-wrap">
-                  {sizes.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setSelectedSize(s)}
-                      className={`px-4 py-2 rounded-md text-sm font-heading uppercase transition-colors border ${
-                        selectedSize === s
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "border-border text-muted-foreground hover:border-primary/50"
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">Variants</Label>
-                <div className="mb-3">
-                  <Label className="font-heading text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Sleeve</Label>
-                  <div className="flex gap-2 flex-wrap">
-                    {sleeveOptions.map((opt) => (
-                      <button
-                        key={opt}
-                        onClick={() => setSelectedSleeve(opt)}
-                        className={`px-3 py-1 rounded-md text-sm transition-colors border ${
-                          selectedSleeve === opt ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <Label className="font-heading text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Fit</Label>
-                  <div className="flex gap-2 flex-wrap">
-                    {fitOptions.map((opt) => (
-                      <button
-                        key={opt}
-                        onClick={() => setSelectedFit(opt)}
-                        className={`px-3 py-1 rounded-md text-sm transition-colors border ${
-                          selectedFit === opt ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="font-heading text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Fabric</Label>
-                  <div className="flex gap-2 flex-wrap">
-                    {fabricOptions.map((opt) => (
-                      <button
-                        key={opt}
-                        onClick={() => setSelectedFabric(opt)}
-                        className={`px-3 py-1 rounded-md text-sm transition-colors border ${
-                          selectedFabric === opt ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">Color</Label>
-                <div className="flex gap-2 flex-wrap">
-                  {tshirtColors.map((c) => (
-                    <button
-                      key={c.name}
-                      onClick={() => setSelectedColor(c)}
-                      title={c.name}
-                      className={`w-9 h-9 rounded-full border-2 transition-all ${
-                        selectedColor.name === c.name ? "border-primary scale-110" : "border-border"
-                      }`}
-                      style={{ backgroundColor: c.value }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-2 block">
-                  <Upload size={14} className="inline mr-1" /> Upload Image
-                </Label>
-                <Input type="file" accept="image/*" onChange={handleImageUpload} className="bg-secondary border-border text-sm" />
-              </div>
+        <div className="container relative">
+          <div className="mb-6 rounded-2xl border border-border/80 bg-card/80 p-5 text-left shadow-xl backdrop-blur-sm md:mb-8 md:p-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-heading uppercase tracking-[0.18em] text-primary">
+              <Shirt size={14} /> Kase Brothers Studio
             </div>
+            <h1 className="mt-4 text-3xl leading-tight md:text-5xl">
+              Build Your <span className="text-gradient">Perfect T-Shirt</span>
+            </h1>
+            <p className="mt-3 max-w-3xl text-sm text-muted-foreground md:text-base">
+              Mobile-first customizer with live 3D preview, easy variant controls, and quick checkout flow.
+              Pick type, size, fit, fabric, color, then upload your design and place your order.
+            </p>
+          </div>
 
-            {/* Center: Canvas */}
-            <div className="flex flex-col items-center gap-4">
-              <TshirtCanvas
-                color={selectedColor.value}
-                view={view}
-                textToAdd=""
-                textColor="#ffffff"
-                fontSize={24}
-                addTextTrigger={0}
-                imageToAdd={uploadedImage}
-                addImageTrigger={addImageTrigger}
-                onPreviewChange={setPreviewImage}
-                onObjectCountChange={setObjectCount}
-              />
-              <Button variant="outline" size="sm" onClick={() => setView(view === "front" ? "back" : "front")} className="font-heading uppercase tracking-wider gap-2">
-                <RotateCw size={14} /> Flip to {view === "front" ? "Back" : "Front"}
-              </Button>
-            </div>
+          <div className="xl:hidden">
+            <Tabs defaultValue="preview" className="space-y-4">
+              <TabsList className="grid h-auto w-full grid-cols-3 gap-2 bg-transparent p-0">
+                <TabsTrigger value="preview" className="rounded-xl border border-border bg-card px-3 py-2 text-xs uppercase tracking-[0.16em] data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  Preview
+                </TabsTrigger>
+                <TabsTrigger value="design" className="rounded-xl border border-border bg-card px-3 py-2 text-xs uppercase tracking-[0.16em] data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  Design
+                </TabsTrigger>
+                <TabsTrigger value="summary" className="rounded-xl border border-border bg-card px-3 py-2 text-xs uppercase tracking-[0.16em] data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  Summary
+                </TabsTrigger>
+              </TabsList>
 
-            {/* Right Panel: Summary */}
-            <div className="rounded-lg border border-border bg-card p-5 space-y-4">
-              <h3 className="font-heading text-lg uppercase tracking-widest text-primary">Summary</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Size</span>
-                  <span className="font-heading">{selectedSize}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Type</span>
-                  <span className="font-heading">{selectedType}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Sleeve</span>
-                  <span className="font-heading">{selectedSleeve}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Fit</span>
-                  <span className="font-heading">{selectedFit}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Fabric</span>
-                  <span className="font-heading">{selectedFabric}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Color</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full border border-border" style={{ backgroundColor: selectedColor.value }} />
-                    <span className="font-heading">{selectedColor.name}</span>
-                  </div>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Elements</span>
-                  <span className="font-heading">{objectCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">View</span>
-                  <span className="font-heading capitalize">{view}</span>
-                </div>
-              </div>
-              <div className="rounded-md border border-border bg-secondary/30 p-2">
-                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2 font-heading">Live Preview</p>
-                <div className="aspect-[4/5] rounded-md overflow-hidden bg-background flex items-center justify-center">
-                  {previewImage ? (
-                    <img src={previewImage} alt="T-shirt design preview" className="w-full h-full object-contain" />
-                  ) : (
-                    <p className="text-xs text-muted-foreground">Add text or image to preview</p>
-                  )}
-                </div>
-              </div>
-              <Button onClick={handleOrder} size="lg" className="w-full font-heading uppercase tracking-widest glow-primary mt-4">
-                Order Now
-              </Button>
-            </div>
+              <TabsContent value="preview">{canvasPanel}</TabsContent>
+              <TabsContent value="design">{controlsPanel}</TabsContent>
+              <TabsContent value="summary">{summaryPanel}</TabsContent>
+            </Tabs>
+          </div>
+
+          <div className="hidden gap-5 xl:grid xl:grid-cols-12 xl:gap-6">
+            <div className="xl:col-span-4">{controlsPanel}</div>
+            <div className="xl:col-span-5">{canvasPanel}</div>
+            <div className="xl:col-span-3">{summaryPanel}</div>
           </div>
         </div>
       </section>
