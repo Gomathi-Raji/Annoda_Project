@@ -1,11 +1,19 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Paintbrush, Send, Phone, Sparkles } from "lucide-react";
+import { Paintbrush, Send, Phone, Sparkles, Play } from "lucide-react";
 import MainLayout from "@/layouts/MainLayout";
 import DesignCard from "@/components/DesignCard";
 import { featuredDesigns } from "@/utils/mockData";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
+const backgroundVideo = "/KaseBroBackground.mp4";
 const introVideo = "/KaseBroWelcome.mp4";
 
 const steps = [
@@ -16,71 +24,95 @@ const steps = [
 
 const Index = () => (
   <MainLayout>
-    {/* Welcome Intro */}
-    <section className="relative overflow-hidden py-10 md:py-16">
-      <div className="container">
-        <motion.div
-          className="grid gap-0 overflow-hidden rounded-3xl border border-border bg-card/95 shadow-2xl shadow-black/20 md:grid-cols-2"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          <div className="relative min-h-[320px] md:min-h-full">
-            <video
-              className="h-full w-full object-cover"
-              src={introVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
-              controls
-              aria-label="Kase Brothers welcome video"
-            >
-              Your browser does not support the welcome video.
-            </video>
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-background/70 via-background/20 to-primary/20" />
+    {/* Hero Section with Video Background */}
+    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-20 px-4">
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0">
+        <video
+          className="absolute top-1/2 left-1/2 min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 object-cover opacity-60"
+          src={backgroundVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        {/* Subtle geometric overlay + gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-black/80 z-10" />
+        <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/30 z-10" />
+      </div>
 
-            <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-border/70 bg-background/80 p-4 backdrop-blur-sm md:left-6 md:right-6">
-              <p className="text-xs uppercase tracking-[0.22em] text-primary">Kase Brothers Intro</p>
-              <p className="mt-1 text-sm text-foreground">
-                Watch how your idea becomes a personalized T-shirt, from concept to delivery.
-              </p>
-            </div>
+      <div className="container relative z-20 mx-auto">
+        <motion.div
+          className="max-w-3xl mx-auto text-center"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary mb-6 shadow-sm backdrop-blur-sm">
+            <Sparkles size={16} />
+            Welcome to Kase Brothers
           </div>
 
-          <div className="flex flex-col justify-center gap-6 p-8 md:p-12 text-left">
-            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
-              <Sparkles size={16} />
-              Welcome to Kase Brothers
-            </div>
+          {/* Heading */}
+          <h1 className="font-heading text-5xl md:text-7xl text-foreground leading-tight tracking-wide mb-6 drop-shadow-lg">
+            Your Style, Your Story,<br />
+            Your <span className="text-gradient">T-Shirt</span>
+          </h1>
 
-            <div className="space-y-4">
-              <h1 className="font-heading text-4xl md:text-6xl text-foreground leading-tight">
-                Your Style, Your Story, Your <span className="text-gradient">T-Shirt</span>
-              </h1>
-              <p className="max-w-xl text-base md:text-lg text-muted-foreground">
-                Begin with the welcome video, explore design inspiration, and launch your own custom look
-                in just a few steps.
-              </p>
-            </div>
+          {/* Subtitle */}
+          <p className="max-w-xl mx-auto text-lg md:text-xl text-foreground/90 mb-8 font-medium drop-shadow-md">
+            Begin with our welcome video, explore custom design inspiration, and launch your own custom look in just a few steps.
+          </p>
 
-            <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4 md:p-5">
-              <p className="text-xs uppercase tracking-[0.22em] text-primary">Message Card</p>
-              <p className="mt-2 text-sm md:text-base text-foreground">
-                New here? Start by customizing your shirt. Returning customer? Jump straight to your next order.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg" className="font-heading uppercase tracking-widest glow-primary">
-                <Link to="/customize">Start Customizing</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="font-heading uppercase tracking-widest">
-                <Link to="/order">Order Now</Link>
-              </Button>
-            </div>
+          {/* Welcome Video Dialog Modal */}
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Button asChild size="lg" className="font-heading uppercase tracking-widest glow-primary h-12 px-8">
+              <Link to="/customize">Start Customizing</Link>
+            </Button>
+            
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="lg" variant="outline" className="font-heading uppercase tracking-widest h-12 px-8 bg-background/30 backdrop-blur-sm hover:bg-background/50 gap-2 border-white/20">
+                  <Play size={16} fill="currentColor" />
+                  Watch Welcome Intro
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-3xl p-0 overflow-hidden bg-black border-border">
+                <DialogHeader className="p-4 bg-card/95 border-b border-border">
+                  <DialogTitle className="font-heading text-xl uppercase tracking-widest text-primary flex items-center gap-2">
+                    <Sparkles size={18} />
+                    Kase Brothers Welcome Intro
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="aspect-video w-full">
+                  <video
+                    className="h-full w-full object-cover"
+                    src={introVideo}
+                    autoPlay
+                    controls
+                    aria-label="Kase Brothers welcome video"
+                  >
+                    Your browser does not support the welcome video.
+                  </video>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </motion.div>
+      </div>
+
+      {/* Decorative Bottom Wave/Fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
+    </section>
+
+    {/* Message banner block */}
+    <section className="py-8 bg-card border-y border-border">
+      <div className="container text-center max-w-2xl">
+        <p className="text-xs uppercase tracking-[0.22em] text-primary mb-2">Exclusive customization hub</p>
+        <p className="text-sm md:text-base text-muted-foreground">
+          New here? Start by customizing your shirt. Returning customer? Jump straight to your next order.
+        </p>
       </div>
     </section>
 
@@ -129,3 +161,4 @@ const Index = () => (
 );
 
 export default Index;
+
