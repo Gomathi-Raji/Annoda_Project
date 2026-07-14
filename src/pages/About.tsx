@@ -3,7 +3,6 @@ import { ShieldCheck, Truck, Sparkles, Layers, Award, Star, ArrowRight } from "l
 import { Link } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
 import { Button } from "@/components/ui/button";
-import kaseLogo from "@/assets/kase-brothers-logo.png";
 
 const features = [
   {
@@ -75,7 +74,7 @@ const About = () => {
               <div className="absolute -inset-2 bg-gradient-to-r from-primary to-accent rounded-full blur-xl opacity-25" />
               <div className="relative border-4 border-zinc-800 p-3 rounded-full bg-zinc-900/80 backdrop-blur-sm">
                 <img
-                  src={kaseLogo}
+                  src="/1000518709-03.jpeg"
                   alt="Kase Brothers Logo"
                   className="h-64 w-64 md:h-80 md:w-80 rounded-full object-cover shadow-2xl"
                 />

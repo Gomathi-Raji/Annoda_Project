@@ -34,7 +34,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import kaseLogo from "@/assets/kase-brothers-logo.png";
 
 const backgroundVideo = "/KaseBroBackground.mp4";
 const introVideo = "/KaseBroWelcome.mp4";
@@ -99,7 +98,7 @@ const Index = () => {
             {/* Logo */}
             <div className="relative mb-6 border-2 border-primary/20 p-1.5 rounded-full bg-zinc-900/50 backdrop-blur-sm shadow-xl">
               <img 
-                src={kaseLogo} 
+                src="/1000518709-03.jpeg" 
                 alt="Kase Brothers Logo" 
                 className="h-24 w-24 rounded-full object-cover"
               />
