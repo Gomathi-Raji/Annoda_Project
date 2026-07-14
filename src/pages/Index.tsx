@@ -1,6 +1,7 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Paintbrush, Send, Phone, Sparkles, Play } from "lucide-react";
+import { Paintbrush, Send, Phone, Sparkles, Play, Crown } from "lucide-react";
 import MainLayout from "@/layouts/MainLayout";
 import DesignCard from "@/components/DesignCard";
 import { featuredDesigns } from "@/utils/mockData";
@@ -12,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import kaseLogo from "@/assets/kase-brothers-logo.png";
 
 const backgroundVideo = "/KaseBroBackground.mp4";
 const introVideo = "/KaseBroWelcome.mp4";
@@ -57,51 +59,111 @@ const instagramDrops = [
   }
 ];
 
-const Index = () => (
-  <MainLayout>
-    {/* Hero Section with Video Background */}
-    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-20 px-4">
-      {/* Background Video */}
-      <div className="absolute inset-0 z-0">
-        <video
-          className="absolute top-1/2 left-1/2 min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 object-cover opacity-60"
-          src={backgroundVideo}
-          autoPlay
-          loop
-          muted
-          playsInline
-        />
-        {/* Subtle geometric overlay + gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-black/80 z-10" />
-        <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/30 z-10" />
-      </div>
+const Index = () => {
+  const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
 
-      <div className="container relative z-20 mx-auto">
-        <motion.div
-          className="max-w-3xl mx-auto text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary mb-6 shadow-sm backdrop-blur-sm">
-            <Sparkles size={16} />
-            Welcome to Kase Brothers
+  useEffect(() => {
+    setIsWelcomeOpen(true);
+  }, []);
+
+  return (
+    <MainLayout>
+      {/* Welcome Dialog */}
+      <Dialog open={isWelcomeOpen} onOpenChange={setIsWelcomeOpen}>
+        <DialogContent className="sm:max-w-md bg-zinc-950/95 border-zinc-800 text-foreground overflow-hidden p-0 rounded-3xl shadow-2xl backdrop-blur-md">
+          <div className="relative p-8 flex flex-col items-center text-center">
+            {/* Glowing background */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+            
+            {/* Logo */}
+            <div className="relative mb-6 border-2 border-primary/20 p-1.5 rounded-full bg-zinc-900/50 backdrop-blur-sm shadow-xl">
+              <img 
+                src={kaseLogo} 
+                alt="Kase Brothers Logo" 
+                className="h-24 w-24 rounded-full object-cover"
+              />
+              <div className="absolute -top-1 -right-1 bg-amber-500 text-black p-1 rounded-full animate-bounce">
+                <Crown size={16} className="fill-current text-zinc-950" />
+              </div>
+            </div>
+
+            {/* Title */}
+            <h2 className="font-heading text-2xl uppercase tracking-widest text-primary mb-2">
+              Kase Brothers
+            </h2>
+
+            {/* Tag lines */}
+            <div className="mb-4">
+              <p className="font-heading text-xs md:text-sm tracking-widest text-amber-500 uppercase flex items-center justify-center gap-1.5 font-bold mb-1">
+                Your Style <span className="text-zinc-500">•</span> Your Design <span className="text-zinc-500">•</span> Your Statement
+              </p>
+              <p className="text-xs text-muted-foreground italic max-w-xs mx-auto">
+                "We don't just print T-shirts, we print your personality."
+              </p>
+            </div>
+
+            {/* Welcome msg */}
+            <p className="text-sm text-foreground/80 mb-6 max-w-sm">
+              Welcome to the ultimate customization experience. Create custom premium DTF-printed T-shirts or check out our exclusive Instagram collections!
+            </p>
+
+            {/* Actions */}
+            <div className="flex flex-col gap-2 w-full">
+              <Button asChild onClick={() => setIsWelcomeOpen(false)} className="w-full font-heading uppercase tracking-widest h-11 glow-primary">
+                <Link to="/customize">Start Customizing</Link>
+              </Button>
+              <Button variant="ghost" onClick={() => setIsWelcomeOpen(false)} className="w-full text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
+                Explore Website
+              </Button>
+            </div>
           </div>
+        </DialogContent>
+      </Dialog>
 
-          {/* Heading */}
-          <h1 className="font-heading text-5xl md:text-7xl text-foreground leading-tight tracking-wide mb-6 drop-shadow-lg">
-            Your Style, Your Story,<br />
-            Your <span className="text-gradient">T-Shirt</span>
-          </h1>
+      {/* Hero Section with Video Background */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-20 px-4">
+        {/* Background Video */}
+        <div className="absolute inset-0 z-0">
+          <video
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 object-cover opacity-60"
+            src={backgroundVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+          {/* Subtle geometric overlay + gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-black/80 z-10" />
+          <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/30 z-10" />
+        </div>
 
-          {/* Subtitle */}
-          <p className="max-w-xl mx-auto text-lg md:text-xl text-foreground/90 mb-8 font-medium drop-shadow-md">
-            Begin with our welcome video, explore custom design inspiration, and launch your own custom look in just a few steps.
-          </p>
+        <div className="container relative z-20 mx-auto">
+          <motion.div
+            className="max-w-3xl mx-auto text-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary mb-6 shadow-sm backdrop-blur-sm">
+              <Sparkles size={16} />
+              Welcome to Kase Brothers
+            </div>
 
-          {/* Welcome Video Dialog Modal */}
-          <div className="flex flex-wrap items-center justify-center gap-4">
+            {/* Heading */}
+            <h1 className="font-heading text-4xl md:text-6xl text-foreground leading-tight tracking-wide mb-6 drop-shadow-lg">
+              Your Style. Your Design.<br />
+              Your <span className="text-gradient">Statement.</span>
+              <Crown className="text-amber-500 fill-amber-500 animate-pulse h-8 w-8 md:h-12 md:w-12 inline-block ml-3 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+            </h1>
+
+            {/* Subtitle */}
+            <p className="max-w-xl mx-auto text-lg md:text-xl text-foreground/90 mb-8 font-medium drop-shadow-md italic">
+              "We don't just print T-shirts, we print your personality."
+            </p>
+
+            {/* Welcome Video Dialog Modal */}
+            <div className="flex flex-wrap items-center justify-center gap-4">
             <Button asChild size="lg" className="font-heading uppercase tracking-widest glow-primary h-12 px-8">
               <Link to="/customize">Start Customizing</Link>
             </Button>
@@ -246,7 +308,8 @@ const Index = () => (
       </div>
     </section>
   </MainLayout>
-);
+  );
+};
 
 export default Index;
 
