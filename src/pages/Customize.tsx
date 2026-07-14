@@ -22,6 +22,7 @@ const Customize = () => {
   const [view, setView] = useState<"front" | "back">("front");
   const [addImageTrigger, setAddImageTrigger] = useState(0);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState("");
   const [objectCount, setObjectCount] = useState(0);
 
@@ -116,6 +117,7 @@ const Customize = () => {
 
       objectUrlRef.current = optimizedImageUrl;
       setUploadedImage(optimizedImageUrl);
+      setUploadedFileName(file.name);
       setAddImageTrigger((prev) => prev + 1);
     } catch (error) {
       console.error(error);
@@ -279,6 +281,23 @@ const Customize = () => {
           onChange={handleImageUpload}
           className="border-border bg-secondary/40 text-sm"
         />
+        {uploadedFileName && (
+          <div className="mt-2.5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-xs text-emerald-400 font-medium flex items-center justify-between gap-2">
+            <span className="flex items-center gap-1.5 truncate">
+              <CheckCircle2 size={14} className="text-emerald-400 flex-shrink-0" />
+              <span className="truncate">Uploaded: {uploadedFileName}</span>
+            </span>
+            <button 
+              onClick={() => {
+                setUploadedImage(null);
+                setUploadedFileName(null);
+              }}
+              className="text-[10px] uppercase tracking-wider text-muted-foreground hover:text-destructive transition-colors px-2 py-0.5 rounded border border-border bg-background"
+            >
+              Clear
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
