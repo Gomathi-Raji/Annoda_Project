@@ -17,6 +17,7 @@ import {
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/customize", label: "Customize" },
+  { to: "/about", label: "About" },
   { to: "/admin", label: "Admin" },
 ];
 

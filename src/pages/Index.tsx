@@ -1,8 +1,29 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Paintbrush, Send, Phone, Sparkles, Play, Crown } from "lucide-react";
+import { Paintbrush, Send, Phone, Sparkles, Play, Crown, ShieldCheck, Award, Star, MessageSquare } from "lucide-react";
 import MainLayout from "@/layouts/MainLayout";
+
+const testimonials = [
+  {
+    name: "Rishi Kumar",
+    role: "Digital Artist",
+    review: "The print quality is insane! The colors are super vibrant and even after multiple washes, there is no cracking. Absolutely loving the 240 GSM heavy feel.",
+    rating: 5,
+  },
+  {
+    name: "Aaditya S.",
+    role: "Streetwear Enthusiast",
+    review: "Customizer is extremely easy to use. I uploaded my vector files, designed my tee in 2 minutes, and ordered. Delivery was prompt and fitting is perfect.",
+    rating: 5,
+  },
+  {
+    name: "Meera Sen",
+    role: "Merchandise Creator",
+    review: "Kase Brothers helped us set up custom polo tees for our club event. Super high-definition DTF print and premium material. 10/10 recommendation!",
+    rating: 5,
+  },
+];
 import DesignCard from "@/components/DesignCard";
 import { featuredDesigns } from "@/utils/mockData";
 import { Button } from "@/components/ui/button";
@@ -280,6 +301,79 @@ const Index = () => {
       </div>
     </section>
 
+    {/* Why Choose Us / Quality Stats */}
+    <section className="py-20 bg-zinc-950 border-t border-zinc-900 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="container relative z-10">
+        <div className="text-center mb-16">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary mb-2">Our Standards</p>
+          <h2 className="font-heading text-3xl md:text-4xl text-center">
+            Uncompromising <span className="text-primary">Apparel Quality</span>
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">
+            Crafted for creators who settle for nothing less than absolute perfection.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="p-6 rounded-2xl border border-border bg-card/50 backdrop-blur-sm text-center"
+          >
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <ShieldCheck className="text-primary" size={24} />
+            </div>
+            <h3 className="font-heading text-lg text-foreground mb-1">Premium DTF</h3>
+            <p className="text-xs text-muted-foreground">High fidelity prints that don't crack or peel.</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="p-6 rounded-2xl border border-border bg-card/50 backdrop-blur-sm text-center"
+          >
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <Award className="text-primary" size={24} />
+            </div>
+            <h3 className="font-heading text-lg text-foreground mb-1">240 GSM Fabric</h3>
+            <p className="text-xs text-muted-foreground">Heavyweight 100% cotton for the ultimate boxy fit.</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="p-6 rounded-2xl border border-border bg-card/50 backdrop-blur-sm text-center"
+          >
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="text-primary" size={24} />
+            </div>
+            <h3 className="font-heading text-lg text-foreground mb-1">Unisex Styling</h3>
+            <p className="text-xs text-muted-foreground">Tailored cuts looking spectacular on everyone.</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="p-6 rounded-2xl border border-border bg-card/50 backdrop-blur-sm text-center"
+          >
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <Crown className="text-primary" size={24} />
+            </div>
+            <h3 className="font-heading text-lg text-foreground mb-1">Elite Support</h3>
+            <p className="text-xs text-muted-foreground">Dedicated team backing your custom print ideas.</p>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+
     {/* How It Works */}
     <section className="py-20">
       <div className="container">
@@ -302,6 +396,52 @@ const Index = () => {
               <span className="font-heading text-xs text-primary tracking-widest">Step {i + 1}</span>
               <h3 className="font-heading text-xl text-foreground">{step.title}</h3>
               <p className="text-sm text-muted-foreground">{step.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* Customer Testimonials / Reviews */}
+    <section className="py-20 bg-secondary/20 border-t border-border">
+      <div className="container">
+        <div className="text-center mb-16">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary mb-2">Testimonials</p>
+          <h2 className="font-heading text-3xl md:text-4xl text-center">
+            CREATOR <span className="text-primary">STORIES</span>
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">
+            See why custom creators and streetwear lovers choose Kase Brothers.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((t, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+              className="p-8 rounded-2xl border border-zinc-800 bg-zinc-900/40 relative flex flex-col justify-between"
+            >
+              <div className="absolute top-6 right-8 text-primary/10">
+                <MessageSquare size={48} className="fill-current" />
+              </div>
+              <div className="space-y-4">
+                <div className="flex gap-1">
+                  {[...Array(t.rating)].map((_, index) => (
+                    <Star key={index} size={16} className="text-amber-500 fill-current" />
+                  ))}
+                </div>
+                <p className="text-sm text-foreground/90 italic leading-relaxed">
+                  "{t.review}"
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-zinc-800/80">
+                <div className="font-heading text-sm text-foreground">{t.name}</div>
+                <div className="text-[10px] uppercase tracking-wider text-primary">{t.role}</div>
+              </div>
             </motion.div>
           ))}
         </div>
